@@ -1,16 +1,21 @@
+scalar DateTime
+
 type User {
-  id: Int
-  email: String
-  name: String
+  id:                 Int
+  user_id:            String!
+  password:           String!
+  name:               String!
+  status_msg:         String
+  profile_img_url:    String
+  background_img_url: String
+  createdAt:          DateTime
+  updatedAt:          DateTime
 }
 
-input CreateUserInput {
-  email: String!
-  name: String
-}
-
-input UpdateUserInput {
-  id: Int!
+input SignupInput {
+  user_id:            String!
+  password:           String!
+  name:               String!
 }
 
 type Query {
@@ -18,7 +23,5 @@ type Query {
 }
 
 type Mutation {
-  createUser(createUserInput: CreateUserInput!): User!
-  updateUser(updateUserInput: UpdateUserInput!): User!
-  removeUser(id: Int!): User
+  signup(signupInput: SignupInput!): User!
 }

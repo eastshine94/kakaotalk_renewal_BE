@@ -1,4 +1,5 @@
-export class CreateUserInput {
-  email: string;
-  name?: string;
+export class SignupInput {
+  user_id: string;
+  password: string;
+  name: string;
 }
