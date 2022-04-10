@@ -22,13 +22,17 @@ export class PostResolver {
     return this.postService.post({ id });
   }
 
-  // @Mutation('updatePost')
-  // update(@Args('updatePostInput') updatePostInput: UpdatePostInput) {
-  //   return this.postService.update(updatePostInput.id, updatePostInput);
-  // }
+  @Mutation('updatePost')
+  update(@Args('updatePostInput') updatePostInput: UpdatePostInput) {
+    const where = { id: updatePostInput.id };
+    return this.postService.updatePost({
+      where,
+      data: { title: updatePostInput.title, content: updatePostInput.content },
+    });
+  }
 
-  // @Mutation('removePost')
-  // remove(@Args('id') id: number) {
-  //   return this.postService.remove(id);
-  // }
+  @Mutation('removePost')
+  remove(@Args('id') id: number) {
+    return this.postService.deletePost({ id });
+  }
 }

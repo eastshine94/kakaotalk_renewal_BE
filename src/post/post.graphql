@@ -10,10 +10,14 @@ input CreatePostInput {
   title: String!
   content: String
   published: Boolean
+  authorId: Int! 
 }
 
 input UpdatePostInput {
-  id: Int!
+  id: Int!,
+  title: String
+  content: String
+  published: Boolean
 }
 
 type Query {
