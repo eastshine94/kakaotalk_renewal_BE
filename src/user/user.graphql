@@ -18,10 +18,16 @@ input SignupInput {
   name:               String!
 }
 
+input SigninInput {
+  user_id:            String!
+  password:           String!
+}
+
 type Query {
   user(id: Int!): User
 }
 
 type Mutation {
   signup(signupInput: SignupInput!): User!
+  signin(signinInput: SigninInput!): User!
 }
