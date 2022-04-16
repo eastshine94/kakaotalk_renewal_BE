@@ -11,6 +11,12 @@ import { UserModule } from './user/user.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       typePaths: ['./**/*.graphql'],
+      formatError: (err) => ({
+        message: err.message,
+        code: err.extensions.code,
+        path: err.path,
+      }),
+      debug: false,
     }),
     UserModule,
   ],

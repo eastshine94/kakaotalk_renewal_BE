@@ -1,5 +1,6 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { User, Prisma } from '@prisma/client';
+import { ApolloError } from 'apollo-server-express';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma.service';
 import { SALT_ROUNDS } from 'src/config';
@@ -18,13 +19,7 @@ export class UserService {
     });
 
     if (!payload) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          payload: { msg: '존재하지 않는 아이디입니다.' },
-        },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new ApolloError('아이디가 존재하지 않습니다.', 'ID_NOT_FIND');
     }
     return payload;
   }
@@ -46,22 +41,13 @@ export class UserService {
     const { user_id, password } = data;
     const findUser = await this.prisma.user.findUnique({ where: { user_id } });
     if (!findUser) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          payload: { msg: '존재하지 않는 아이디입니다.' },
-        },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new ApolloError('아이디가 존재하지 않습니다.', 'ID_NOT_FIND');
     } else {
       const isVaild = await bcrypt.compare(password, findUser.password);
       if (!isVaild) {
-        throw new HttpException(
-          {
-            status: HttpStatus.BAD_REQUEST,
-            payload: { msg: '비밀번호가 올바르지 않습니다.' },
-          },
-          HttpStatus.BAD_REQUEST,
+        throw new ApolloError(
+          '비밀번호가 정확하지 않습니다.',
+          'PASSWORD_INVALID',
         );
       }
     }
