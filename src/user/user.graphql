@@ -23,7 +23,7 @@ input SignInInput {
 }
 
 type Query {
-  user(id: Int!): User
+  user(user_id: String!): User
 }
 
 type Mutation {
