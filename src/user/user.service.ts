@@ -3,8 +3,8 @@ import { User, Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma.service';
 import { SALT_ROUNDS } from 'src/config';
-import { SignupInput } from './dto/signup.input';
-import { SigninInput } from './dto/signin.input';
+import { SignUpInput } from './dto/sign-up.input';
+import { SignInInput } from './dto/sign-in.input';
 
 @Injectable()
 export class UserService {
@@ -13,12 +13,23 @@ export class UserService {
   async user(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
   ): Promise<User | null> {
-    return this.prisma.user.findUnique({
+    const payload = await this.prisma.user.findUnique({
       where: userWhereUniqueInput,
     });
+
+    if (!payload) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          payload: { msg: '존재하지 않는 아이디입니다.' },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return payload;
   }
 
-  async signup(data: SignupInput): Promise<User> {
+  async signUp(data: SignUpInput): Promise<User> {
     const { user_id, password, name } = data;
     const hashedPw = await bcrypt.hash(password, SALT_ROUNDS);
 
@@ -31,7 +42,7 @@ export class UserService {
     });
   }
 
-  async signin(data: SigninInput) {
+  async signIn(data: SignInInput) {
     const { user_id, password } = data;
     const findUser = await this.prisma.user.findUnique({ where: { user_id } });
     if (!findUser) {

@@ -1,5 +1,5 @@
 import { IsString, IsEmail, MinLength } from 'class-validator';
-export class SigninInput {
+export class SignInInput {
   @IsEmail()
   @MinLength(6)
   user_id: string;

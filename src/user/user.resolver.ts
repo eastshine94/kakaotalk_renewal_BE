@@ -1,20 +1,20 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { UserService } from './user.service';
-import { SignupInput } from './dto/signup.input';
-import { SigninInput } from './dto/signin.input';
+import { SignUpInput } from './dto/sign-up.input';
+import { SignInInput } from './dto/sign-in.input';
 
 @Resolver('User')
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
-  @Mutation('signup')
-  signup(@Args('signupInput') signupInput: SignupInput) {
-    return this.userService.signup(signupInput);
+  @Mutation('signUp')
+  signup(@Args('signUpInput') signUpInput: SignUpInput) {
+    return this.userService.signUp(signUpInput);
   }
 
-  @Mutation('signin')
-  signin(@Args('signinInput') signinInput: SigninInput) {
-    return this.userService.signin(signinInput);
+  @Mutation('signIn')
+  signIn(@Args('signInInput') signInInput: SignInInput) {
+    return this.userService.signIn(signInInput);
   }
 
   @Query('user')

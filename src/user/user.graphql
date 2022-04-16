@@ -3,7 +3,6 @@ scalar DateTime
 type User {
   id:                 Int
   user_id:            String!
-  password:           String!
   name:               String!
   status_msg:         String
   profile_img_url:    String
@@ -12,13 +11,13 @@ type User {
   updatedAt:          DateTime
 }
 
-input SignupInput {
+input SignUpInput {
   user_id:            String!
   password:           String!
   name:               String!
 }
 
-input SigninInput {
+input SignInInput {
   user_id:            String!
   password:           String!
 }
@@ -28,6 +27,6 @@ type Query {
 }
 
 type Mutation {
-  signup(signupInput: SignupInput!): User!
-  signin(signinInput: SigninInput!): User!
+  signUp(signUpInput: SignUpInput!): User!
+  signIn(signInInput: SignInInput!): User!
 }
