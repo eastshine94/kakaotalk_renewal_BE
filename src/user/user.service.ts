@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { User, Prisma } from '@prisma/client';
+import { Injectable, HttpStatus } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { ApolloError } from 'apollo-server-express';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma.service';
@@ -11,35 +11,51 @@ import { SignInInput } from './dto/sign-in.input';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async user(
-    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
-  ): Promise<User | null> {
-    const payload = await this.prisma.user.findUnique({
+  async user(userWhereUniqueInput: Prisma.UserWhereUniqueInput) {
+    const foundUser = await this.prisma.user.findUnique({
       where: userWhereUniqueInput,
     });
 
-    if (!payload) {
+    if (!foundUser) {
       throw new ApolloError('아이디가 존재하지 않습니다.', 'ID_NOT_FIND');
     }
-    return payload;
+    return foundUser;
   }
 
-  async signUp(data: SignUpInput): Promise<User> {
+  async signUp(data: SignUpInput) {
     const { user_id, password, name } = data;
-    const hashedPw = await bcrypt.hash(password, SALT_ROUNDS);
-
-    return this.prisma.user.create({
-      data: {
-        user_id,
-        password: hashedPw,
-        name,
-      },
-    });
+    try {
+      const findUser = await this.prisma.user.findUnique({
+        where: { user_id },
+      });
+      if (findUser) {
+        throw new ApolloError('해당 계정이 이미 존재합니다.', 'ID_EXIST');
+      }
+      const hashedPw = await bcrypt.hash(password, SALT_ROUNDS);
+      const user = await this.prisma.user.create({
+        data: {
+          user_id,
+          password: hashedPw,
+          name,
+        },
+      });
+      return {
+        status: HttpStatus.OK,
+        message: '계정이 생성되었습니다.',
+        user_id: user.user_id,
+      };
+    } catch (err) {
+      throw new ApolloError(
+        '처리 중 에러가 발생했습니다!',
+        'INTERNAL_SERVER_ERROR',
+      );
+    }
   }
 
   async signIn(data: SignInInput) {
     const { user_id, password } = data;
     const findUser = await this.prisma.user.findUnique({ where: { user_id } });
+
     if (!findUser) {
       throw new ApolloError('아이디가 존재하지 않습니다.', 'ID_NOT_FIND');
     } else {

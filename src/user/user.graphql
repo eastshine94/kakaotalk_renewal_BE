@@ -17,6 +17,13 @@ input SignUpInput {
   name:               String!
 }
 
+type SignUpPayload {
+  status:             String!
+  msg:                String!
+  user_id:            String
+}
+
+
 input SignInInput {
   user_id:            String!
   password:           String!
@@ -27,6 +34,6 @@ type Query {
 }
 
 type Mutation {
-  signUp(signUpInput: SignUpInput!): User!
+  signUp(signUpInput: SignUpInput!): SignUpPayload!
   signIn(signInInput: SignInInput!): User!
 }

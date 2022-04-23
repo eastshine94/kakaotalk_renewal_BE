@@ -1,11 +1,11 @@
-import { IsString, IsEmail, MinLength } from 'class-validator';
+import { IsString, IsEmail, MinLength, MaxLength } from 'class-validator';
 export class SignUpInput {
   @IsEmail()
-  @MinLength(6)
   user_id: string;
 
   @IsString()
-  @MinLength(8)
+  @MinLength(5)
+  @MaxLength(15)
   password: string;
 
   @IsString()
