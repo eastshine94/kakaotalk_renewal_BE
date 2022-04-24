@@ -19,7 +19,7 @@ input SignUpInput {
 
 type SignUpPayload {
   status:             String!
-  msg:                String!
+  message:            String!
   user_id:            String
 }
 
